@@ -14,6 +14,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var biometricPrompt: androidx.biometric.BiometricPrompt
     private val TAG: String = "MAinActivity"
+    private val TAGError: String = "AuthenticationError"
+    private val TAGBio: String = "OpenBio"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,26 +31,6 @@ class MainActivity : AppCompatActivity() {
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
                 Log.d(TAG, "$errorCode :: $errString")
-
-                if (errorCode == androidx.biometric.BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
-                    //finish()
-                    Toast.makeText(this@MainActivity,
-                        "Canceled by User pressing negative button", Toast.LENGTH_LONG).show()
-                }
-                else if (errorCode == androidx.biometric.BiometricPrompt.ERROR_CANCELED) {
-                    //finish()
-                    Toast.makeText(this@MainActivity, "Canceled", Toast.LENGTH_LONG).show()
-                }
-                else if (errorCode == androidx.biometric.BiometricPrompt.ERROR_HW_NOT_PRESENT) {
-                    //finish()
-                    Toast.makeText(this@MainActivity,
-                        "No BioHardware on this device", Toast.LENGTH_LONG).show()
-                }
-                else if (errorCode == androidx.biometric.BiometricPrompt.ERROR_NO_DEVICE_CREDENTIAL) {
-                    //finish()
-                    Toast.makeText(this@MainActivity,
-                        "No Biometric set up on this device", Toast.LENGTH_LONG).show()
-                }
             }
 
             override fun onAuthenticationFailed() {
@@ -76,14 +58,39 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun openBio(view: View) {
-        Log.d(TAG, "<+++ BiometricPrompt Opened +++>")
         val promptInfo = createPromptInfo()
-        if (BiometricManager
+        if (BiometricManager.BIOMETRIC_SUCCESS == BiometricManager
                 .from(applicationContext)
-                .canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS){
+                .canAuthenticate()){
             biometricPrompt.authenticate(promptInfo)
+            Log.d(TAGBio, "<+++ BiometricPrompt Opened +++>")
         }else{
             loginWithPassword()
+        }
+
+        if (BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE == BiometricManager
+                .from(applicationContext)
+                .canAuthenticate()){
+            Log.d(TAGBio, "This device does not have a biometric scanner.")
+            Toast.makeText(applicationContext,
+                "This device does not have a biometric scanner.", Toast.LENGTH_LONG).show()
+        }
+        if (BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED == BiometricManager
+                .from(applicationContext)
+                .canAuthenticate()){
+            Log.d(TAGBio, "The user does not have any biometrics enrolled")
+            Toast.makeText(applicationContext,
+                "The user does not have any biometrics enrolled", Toast.LENGTH_LONG).show()
+
+            //TODO take user to the biometric settings: likely show a dialog and give
+            // the user a choice to set up biometrics or continue where they are.
+        }
+        if (BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE == BiometricManager
+                .from(applicationContext)
+                .canAuthenticate()){
+            Log.d(TAGBio, "Biometric hardware is currently unavailable")
+            Toast.makeText(applicationContext,
+                "Biometric hardware is currently unavailable", Toast.LENGTH_LONG).show()
         }
     }
 
