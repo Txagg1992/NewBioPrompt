@@ -30,27 +30,24 @@ class MainActivity : AppCompatActivity() {
                 super.onAuthenticationError(errorCode, errString)
                 Log.d(TAG, "$errorCode :: $errString")
 
-                when (errorCode) {
-                    androidx.biometric.BiometricPrompt.ERROR_NEGATIVE_BUTTON -> {
-                        //finish()
-                        Toast.makeText(this@MainActivity,
-                            "Canceled by User pressing negative button", Toast.LENGTH_LONG).show()
-                    }
-                    androidx.biometric.BiometricPrompt.ERROR_CANCELED -> {
-                        //finish()
-                        Toast.makeText(this@MainActivity, "Canceled", Toast.LENGTH_LONG).show()
-                    }
-                    androidx.biometric.BiometricPrompt.ERROR_HW_NOT_PRESENT -> {
-                        //finish()
-                        Toast.makeText(this@MainActivity,
-                            "No BioHardware on this device", Toast.LENGTH_LONG).show()
-                    }
-                    androidx.biometric.BiometricPrompt.ERROR_NO_DEVICE_CREDENTIAL -> {
-                        //finish()
-                        Toast.makeText(this@MainActivity,
-                            "No Biometric set up on this device", Toast.LENGTH_LONG).show()
-                    }
-
+                if (errorCode == androidx.biometric.BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
+                    //finish()
+                    Toast.makeText(this@MainActivity,
+                        "Canceled by User pressing negative button", Toast.LENGTH_LONG).show()
+                }
+                else if (errorCode == androidx.biometric.BiometricPrompt.ERROR_CANCELED) {
+                    //finish()
+                    Toast.makeText(this@MainActivity, "Canceled", Toast.LENGTH_LONG).show()
+                }
+                else if (errorCode == androidx.biometric.BiometricPrompt.ERROR_HW_NOT_PRESENT) {
+                    //finish()
+                    Toast.makeText(this@MainActivity,
+                        "No BioHardware on this device", Toast.LENGTH_LONG).show()
+                }
+                else if (errorCode == androidx.biometric.BiometricPrompt.ERROR_NO_DEVICE_CREDENTIAL) {
+                    //finish()
+                    Toast.makeText(this@MainActivity,
+                        "No Biometric set up on this device", Toast.LENGTH_LONG).show()
                 }
             }
 
