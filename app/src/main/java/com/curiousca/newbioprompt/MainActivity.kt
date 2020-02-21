@@ -35,8 +35,8 @@ class MainActivity : AppCompatActivity() {
 
             override fun onAuthenticationFailed() {
                 super.onAuthenticationFailed()
-                Log.d(TAG, "Authentication Failed")
-                Toast.makeText(this@MainActivity, "Authentication Failed", Toast.LENGTH_LONG).show()
+                Log.d(TAG, "Authentication Failed: print not recognized")
+                Toast.makeText(applicationContext, "Authentication Failed", Toast.LENGTH_LONG).show()
             }
 
             override fun onAuthenticationSucceeded(result: androidx.biometric.BiometricPrompt.AuthenticationResult) {
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                 doLogin()
             }
         }
-        return androidx.biometric.BiometricPrompt(this@MainActivity, executor, callback)
+        return androidx.biometric.BiometricPrompt(this, executor, callback)
 
     }
 
